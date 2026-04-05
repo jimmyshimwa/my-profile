@@ -30,3 +30,51 @@ body {
 .caret { display:inline-block; width:3px; height:0.85em; background:var(--accent); vertical-align:middle; margin-left:4px; animation:blink 1s step-end infinite; }
 
 @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+@media (max-width: 640px) {
+  .nav-desktop { display: none !important; }
+  .nav-hamburger { display: flex !important; }
+
+  .project-item {
+    grid-template-columns: 1fr auto !important;
+    gap: 0.8rem !important;
+  }
+
+  .project-item > span:first-child {
+    display: none; /* hide the project number on mobile */
+  }
+}
+
+/* About section responsive */
+.about-grid {
+  grid-template-columns: 220px 1fr;
+}
+
+@media (max-width: 768px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-row > div {
+    flex: unset !important;
+    width: calc(50% - 1rem);
+    border-right: none !important;
+    padding-right: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-row > div {
+    width: 100%;
+  }
+}
+.hero-section {
+  padding: 0 2.5rem;
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    padding: 0 1.25rem;
+  }
+}

@@ -49,10 +49,9 @@ export default function About() {
 
       {/* TOP ROW: photo left, heading + bio right */}
       <div
-        className="reveal"
+        className="reveal about-grid"
         style={{
           display: "grid",
-          gridTemplateColumns: "220px 1fr",
           gap: "4rem",
           alignItems: "start",
           marginBottom: "4rem",
@@ -176,9 +175,11 @@ export default function About() {
 
       {/* BOTTOM ROW: stats */}
       <div
-        className="reveal"
+        className="reveal stats-row"
         style={{
           display: "flex",
+          flexWrap: "wrap",
+          gap: "2rem",
           borderTop: "1px solid var(--border)",
           paddingTop: "2.5rem",
         }}

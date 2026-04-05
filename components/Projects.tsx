@@ -14,10 +14,11 @@ function ProjectItem({ project }: { project: Project }) {
       href={project.href}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      className="project-item"
       style={{
         display: "grid",
         gridTemplateColumns: "60px 1fr auto",
-        gap: "2rem",
+        gap: "1.5rem",
         alignItems: "center",
         padding: "2rem 0",
         borderTop: "1px solid var(--border)",

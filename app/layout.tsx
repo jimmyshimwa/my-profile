@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   description: "Full-stack developer based in Kigali, Rwanda. Crafting fast, purposeful digital products — from idea to deployment.",
   keywords: ["developer", "full-stack", "React", "Next.js", "Kigali", "Rwanda"],
   authors: [{ name: "Jimmy Shimwa" }],
+  viewport: "width=device-width, initial-scale=1",
   openGraph: {
     title: "Jimmy Shimwa — Developer",
     description: "Full-stack developer crafting fast, purposeful digital products.",
