@@ -2,7 +2,7 @@ import SectionLabel from "./SectionLabel";
 import type { Stat } from "@/types";
 
 const STATS: Stat[] = [
-  { value: "1+", label: "Year of experience" },
+  { value: "2+", label: "Year of experience" },
   { value: "5+", label: "Projects shipped" },
   { value: "∞", label: "Lines debugged" },
 ];

@@ -90,10 +90,9 @@ export default function Skills() {
       <SectionLabel>002 — What I do</SectionLabel>
 
       <div
-        className="reveal"
+        className="reveal skills-grid"
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
           border: "1px solid var(--border)",
           marginTop: "3rem",
         }}

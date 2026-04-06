@@ -91,10 +91,9 @@ export default function Blog() {
       <SectionLabel>004 — Writing</SectionLabel>
 
       <div
-        className="reveal"
+        className="reveal blog-grid"
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
           gap: "2rem",
           marginTop: "3rem",
         }}
