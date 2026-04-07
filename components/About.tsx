@@ -1,3 +1,4 @@
+import Image from "next/image";
 import SectionLabel from "./SectionLabel";
 import type { Stat } from "@/types";
 
@@ -52,14 +53,14 @@ export default function About() {
         className="reveal about-grid"
         style={{
           display: "grid",
-          gap: "4rem",
+          gap: "6rem",
           alignItems: "start",
           marginBottom: "4rem",
         }}
       >
         {/* Photo / placeholder */}
         <div>
-          <div style={{ position: "relative", width: "220px" }}>
+          <div style={{ position: "relative", width: "280px" }}>
             {/* Corner brackets */}
             <div style={{
               position: "absolute", top: "-8px", left: "-8px",
@@ -76,39 +77,20 @@ export default function About() {
               zIndex: 2,
             }} />
 
-            {/* Placeholder frame */}
-            <div style={{
-              width: "220px",
-              height: "270px",
-              background: "#111",
-              border: "1px solid var(--border)",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "0.6rem",
-            }}>
-              <div style={{
-                fontSize: "3rem",
-                fontWeight: 800,
-                fontFamily: "var(--font-display)",
-                color: "var(--accent)",
-                opacity: 0.3,
-                letterSpacing: "-0.04em",
-              }}>
-                JS
-              </div>
-              <div style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.6rem",
-                letterSpacing: "0.15em",
-                textTransform: "uppercase",
-                color: "var(--muted)",
-                opacity: 0.4,
-              }}>
-                photo coming soon
-              </div>
-            </div>
+            {/* Photo */}
+            <Image
+              src="/images/profile.png"
+              alt="Jimmy Shimwa"
+              width={280}
+              height={340}
+              style={{
+                width: "280px",
+                height: "340px",
+                objectFit: "cover",
+                border: "1px solid var(--border)",
+              }}
+              priority
+            />
           </div>
 
           {/* Caption */}
