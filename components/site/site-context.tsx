@@ -2,58 +2,58 @@
 
 import { createContext, use, useCallback, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import type { Hat, TimeOfDay } from "@/lib/content/types";
-import { kigaliTime, timeOfDayFor } from "@/lib/kigali";
+import type { Hat } from "@/lib/content/types";
 import { lineState, notifyLayoutChange } from "@/lib/line-store";
+import { THEME_KEY, type Theme } from "@/lib/theme";
 
 type SiteState = {
-  /** null until the visitor picks a hat on the gate. Never persisted. */
-  hat: Hat | null;
-  /** The hat used for rendering: the chosen one, or Founder before choosing. */
-  activeHat: Hat;
+  hat: Hat;
+  /** True once the visitor has picked a hat themselves. */
+  chosen: boolean;
   chooseHat: (hat: Hat) => void;
-  /** The real Kigali time of day. */
-  liveTime: TimeOfDay;
-  /** What the page shows: a preview, or the live time. */
-  time: TimeOfDay;
-  previewTime: TimeOfDay | null;
-  setPreviewTime: (t: TimeOfDay | null) => void;
+  theme: Theme;
+  toggleTheme: () => void;
 };
 
 const SiteContext = createContext<SiteState | null>(null);
 
 export function SiteProvider({ children }: { children: ReactNode }) {
-  const [hat, setHat] = useState<Hat | null>(null);
-  const [liveTime, setLiveTime] = useState<TimeOfDay>("day");
-  const [previewTime, setPreviewTime] = useState<TimeOfDay | null>(null);
+  const [hat, setHat] = useState<Hat>("founder");
+  const [chosen, setChosen] = useState(false);
+  // The pre-paint script already set data-theme; read it once on mount.
+  const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
-    const tick = () => setLiveTime(timeOfDayFor(kigaliTime().hour));
-    tick();
-    const id = window.setInterval(tick, 60_000);
-    return () => window.clearInterval(id);
+    const t = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+    lineState.theme = t;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing from the DOM set before hydration
+    setTheme(t);
   }, []);
 
-  const activeHat = hat ?? "founder";
-  const time = previewTime ?? liveTime;
-
-  useEffect(() => {
-    document.documentElement.dataset.hat = activeHat;
-    lineState.hat = activeHat;
-    // Project order changes with the hat, so the route has to be redrawn.
+  const chooseHat = useCallback((h: Hat) => {
+    setHat(h);
+    setChosen(true);
+    // Project order changes with the hat, so the line is re-laid out.
     requestAnimationFrame(() => notifyLayoutChange());
-  }, [activeHat]);
+  }, []);
 
-  useEffect(() => {
-    document.documentElement.dataset.time = time;
-    lineState.time = time;
-  }, [time]);
-
-  const chooseHat = useCallback((h: Hat) => setHat(h), []);
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => {
+      const next: Theme = prev === "dark" ? "light" : "dark";
+      document.documentElement.dataset.theme = next;
+      lineState.theme = next;
+      try {
+        localStorage.setItem(THEME_KEY, next);
+      } catch {
+        /* storage unavailable: the theme still applies for this visit */
+      }
+      return next;
+    });
+  }, []);
 
   const value = useMemo<SiteState>(
-    () => ({ hat, activeHat, chooseHat, liveTime, time, previewTime, setPreviewTime }),
-    [hat, activeHat, chooseHat, liveTime, time, previewTime],
+    () => ({ hat, chosen, chooseHat, theme, toggleTheme }),
+    [hat, chosen, chooseHat, theme, toggleTheme],
   );
 
   return <SiteContext value={value}>{children}</SiteContext>;

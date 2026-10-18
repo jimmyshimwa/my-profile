@@ -166,13 +166,13 @@ function ProjectForm({
             }}
           />
         </Field>
-        <Field label="Slug" hint={`/work/${p.slug || "…"}`}>
+        <Field label="Slug" hint="A short id, lowercase with dashes.">
           <Input value={p.slug} onChange={(e) => set("slug", e.target.value)} />
         </Field>
         <Field label="Year">
           <Input type="number" value={p.year} onChange={(e) => set("year", Number(e.target.value))} />
         </Field>
-        <Field label="The Line's move here" hint={MOVE_HINT[p.move]}>
+        <Field label="Line move (not used in this layout)" hint={MOVE_HINT[p.move]}>
           <Select value={p.move} onChange={(e) => set("move", e.target.value as Project["move"])}>
             {LINE_MOVES.map((m) => (
               <option key={m} value={m}>
@@ -217,7 +217,7 @@ function ProjectForm({
             onChange={(e) => set("stack", e.target.value.split(",").map((s) => s.trim()).filter(Boolean))}
           />
         </Field>
-        <Field label="Links" hint="One per line: Label | https://…">
+        <Field label="Links" hint="One per line: Label | https://… The first link is where the card opens.">
           <Textarea
             rows={3}
             value={p.links.map((l) => `${l.label} | ${l.url}`).join("\n")}
@@ -243,15 +243,10 @@ function ProjectForm({
 
       <div className="flex flex-wrap gap-6">
         <Check label="Published" checked={p.published} onChange={(e) => set("published", e.target.checked)} />
-        <Check label="Featured on the route" checked={p.featured} onChange={(e) => set("featured", e.target.checked)} />
+        <Check label="Show in Selected work" checked={p.featured} onChange={(e) => set("featured", e.target.checked)} />
       </div>
 
       <SaveBar dirty={d.dirty} pending={d.pending} status={d.status} restored={d.restored} onSave={d.save} onDiscard={d.discard}>
-        {p.slug ? (
-          <a href={`/admin/preview/${p.slug}`} target="_blank" rel="noreferrer" className="text-sm underline underline-offset-4">
-            Preview saved version
-          </a>
-        ) : null}
         <Button
           variant="danger"
           disabled={deleting}

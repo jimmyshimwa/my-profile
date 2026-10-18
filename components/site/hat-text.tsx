@@ -19,23 +19,14 @@ export function HatText({
   className?: string;
   paragraphs?: boolean;
 }) {
-  const { activeHat, hat } = useSite();
-  const text = copy[activeHat];
-  // No animation before a hat is chosen: the first render is the static page.
-  const cls = `${className ?? ""} ${hat ? "hat-wipe" : ""}`;
+  const { hat, chosen } = useSite();
+  const text = copy[hat];
+  // No animation on first render: that is the static page.
+  const cls = `${className ?? ""} ${chosen ? "hat-wipe" : ""}`;
 
-  if (paragraphs) {
-    return (
-      <Tag key={activeHat} className={cls}>
-        {text.split(/\n\n+/).map((p, i) => (
-          <p key={i}>{p}</p>
-        ))}
-      </Tag>
-    );
-  }
   return (
-    <Tag key={activeHat} className={cls}>
-      {text}
+    <Tag key={hat} className={cls}>
+      {paragraphs ? text.split(/\n\n+/).map((p, i) => <p key={i}>{p}</p>) : text}
     </Tag>
   );
 }

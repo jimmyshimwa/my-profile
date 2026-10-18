@@ -4,10 +4,10 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { lineState, notifyLayoutChange } from "@/lib/line-store";
 import { detectTier, type Tier } from "@/lib/tier";
-import LineSvg from "./line-svg";
+import RibbonSvg from "./ribbon-svg";
 
 // The 3D chunk loads after first paint and never blocks the hero.
-const LineCanvas = dynamic(() => import("./line-canvas"), { ssr: false });
+const RibbonCanvas = dynamic(() => import("./ribbon-canvas"), { ssr: false });
 
 export function LineStage() {
   const [tier, setTier] = useState<Tier | null>(null);
@@ -21,7 +21,7 @@ export function LineStage() {
     };
   }, []);
 
-  // Route geometry depends on layout: rebuild when anything resizes.
+  // Routes depend on layout: rebuild when anything resizes.
   useEffect(() => {
     let t = 0;
     const ro = new ResizeObserver(() => {
@@ -43,38 +43,34 @@ export function LineStage() {
       lineState.pointer.y = e.clientY;
       lineState.pointer.active = true;
     };
+    const up = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") lineState.pointer.active = false;
+    };
     const leave = () => {
       lineState.pointer.active = false;
     };
     window.addEventListener("pointermove", move, { passive: true });
     window.addEventListener("pointerdown", move, { passive: true });
-    window.addEventListener("pointerup", (e) => e.pointerType !== "mouse" && leave(), { passive: true });
+    window.addEventListener("pointerup", up, { passive: true });
     document.documentElement.addEventListener("pointerleave", leave);
     return () => {
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerdown", move);
+      window.removeEventListener("pointerup", up);
       document.documentElement.removeEventListener("pointerleave", leave);
     };
   }, []);
 
   if (!tier) return null;
-
-  if (tier === "svg" || tier === "static") {
-    return (
-      <>
-        <div aria-hidden className="topo-fallback pointer-events-none fixed inset-0 -z-10" />
-        <LineSvg mode={tier} />
-      </>
-    );
-  }
+  if (tier === "svg" || tier === "static") return <RibbonSvg mode={tier} />;
 
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-0 -z-10 transition-opacity duration-1000"
+      className="pointer-events-none fixed inset-0 -z-10 transition-opacity duration-700"
       style={{ opacity: ready ? 1 : 0 }}
     >
-      <LineCanvas tier={tier} onReady={() => setReady(true)} />
+      <RibbonCanvas tier={tier} onReady={() => setReady(true)} />
     </div>
   );
 }

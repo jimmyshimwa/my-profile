@@ -2,28 +2,9 @@
 
 import { useState, useTransition } from "react";
 import type { ReactNode } from "react";
-import {
-  deleteAlsoShipped,
-  deleteClockStatus,
-  deleteLineMessage,
-  deletePosition,
-  saveAlsoShipped,
-  saveClockStatus,
-  saveLineMessage,
-  savePosition,
-  type ActionResult,
-} from "@/app/admin/actions";
-import {
-  HATS,
-  HAT_LABEL,
-  LINE_TRIGGERS,
-  TIMES_OF_DAY,
-  type AlsoShipped,
-  type ClockStatus,
-  type LineMessage,
-  type Position,
-} from "@/lib/content/types";
-import { Button, Check, Field, Input, SaveBar, Select, Textarea, useDraft } from "./ui";
+import { deleteClockStatus, saveClockStatus, type ActionResult } from "@/app/admin/actions";
+import type { ClockStatus } from "@/lib/content/types";
+import { Button, Field, Input, SaveBar, useDraft } from "./ui";
 
 /** A list of rows, each opened into its own form with save and delete. */
 function ListEditor<T extends { id: string }>({
@@ -131,134 +112,6 @@ function RowForm<T extends { id: string }>({
         </Button>
       </SaveBar>
     </div>
-  );
-}
-
-export function PositionsEditor({ items }: { items: Position[] }) {
-  return (
-    <ListEditor<Position>
-      title="Positions"
-      items={items}
-      label={(p) => (p.title ? `${p.title}, ${p.organization}` : "")}
-      save={savePosition}
-      remove={deletePosition}
-      create={() => ({
-        id: crypto.randomUUID(),
-        title: "",
-        organization: "",
-        url: null,
-        startDate: "2026-01-01",
-        endDate: null,
-        current: true,
-        description: { founder: "", engineer: "", pm: "" },
-        order: items.length,
-        visible: true,
-      })}
-      fields={(p, set) => (
-        <>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Title"><Input value={p.title} onChange={(e) => set({ ...p, title: e.target.value })} /></Field>
-            <Field label="Organization"><Input value={p.organization} onChange={(e) => set({ ...p, organization: e.target.value })} /></Field>
-            <Field label="Link"><Input type="url" value={p.url ?? ""} onChange={(e) => set({ ...p, url: e.target.value || null })} /></Field>
-            <Field label="Display order"><Input type="number" value={p.order} onChange={(e) => set({ ...p, order: Number(e.target.value) })} /></Field>
-            <Field label="Start date"><Input type="date" value={p.startDate} onChange={(e) => set({ ...p, startDate: e.target.value })} /></Field>
-            <Field label="End date" hint="Leave empty if current.">
-              <Input type="date" value={p.endDate ?? ""} onChange={(e) => set({ ...p, endDate: e.target.value || null })} />
-            </Field>
-          </div>
-          <div className="grid gap-4 lg:grid-cols-3">
-            {HATS.map((h) => (
-              <Field key={h} label={`Description, ${HAT_LABEL[h].toLowerCase()}`}>
-                <Textarea rows={3} value={p.description[h]} onChange={(e) => set({ ...p, description: { ...p.description, [h]: e.target.value } })} />
-              </Field>
-            ))}
-          </div>
-          <div className="flex gap-6">
-            <Check label="Current" checked={p.current} onChange={(e) => set({ ...p, current: e.target.checked })} />
-            <Check label="Visible" checked={p.visible} onChange={(e) => set({ ...p, visible: e.target.checked })} />
-          </div>
-        </>
-      )}
-    />
-  );
-}
-
-export function AlsoShippedEditor({ items }: { items: AlsoShipped[] }) {
-  return (
-    <ListEditor<AlsoShipped>
-      title="Also built"
-      items={items}
-      label={(a) => a.title}
-      save={saveAlsoShipped}
-      remove={deleteAlsoShipped}
-      create={() => ({ id: crypto.randomUUID(), title: "", note: "", url: null, status: "shipped", order: items.length, visible: true })}
-      fields={(a, set) => (
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Title"><Input value={a.title} onChange={(e) => set({ ...a, title: e.target.value })} /></Field>
-          <Field label="Link"><Input type="url" value={a.url ?? ""} onChange={(e) => set({ ...a, url: e.target.value || null })} /></Field>
-          <Field label="Note"><Input value={a.note} onChange={(e) => set({ ...a, note: e.target.value })} /></Field>
-          <Field label="Status">
-            <Select value={a.status} onChange={(e) => set({ ...a, status: e.target.value as AlsoShipped["status"] })}>
-              <option value="shipped">Live</option>
-              <option value="finished">Finished, not launched</option>
-            </Select>
-          </Field>
-          <Field label="Display order"><Input type="number" value={a.order} onChange={(e) => set({ ...a, order: Number(e.target.value) })} /></Field>
-          <Check label="Visible" checked={a.visible} onChange={(e) => set({ ...a, visible: e.target.checked })} />
-        </div>
-      )}
-    />
-  );
-}
-
-const TRIGGER_LABEL: Record<LineMessage["trigger"], string> = {
-  hello: "Right after a hat is picked",
-  idle: "When the visitor stops scrolling",
-  fast: "When the visitor scrolls fast",
-  end: "At the end of the page",
-};
-
-export function LineMessagesEditor({ items }: { items: LineMessage[] }) {
-  return (
-    <ListEditor<LineMessage>
-      title="What the Line says"
-      items={items}
-      label={(m) => (m.text ? `“${m.text}”  (${m.trigger}${m.active ? "" : ", off"})` : "")}
-      save={saveLineMessage}
-      remove={deleteLineMessage}
-      create={() => ({ id: crypto.randomUUID(), trigger: "idle", hat: null, timeOfDay: null, text: "", active: true })}
-      fields={(m, set) => (
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Text" hint={`${m.text.length}/80. Short and plain.`}>
-            <Input maxLength={80} value={m.text} onChange={(e) => set({ ...m, text: e.target.value })} />
-          </Field>
-          <Field label="When">
-            <Select value={m.trigger} onChange={(e) => set({ ...m, trigger: e.target.value as LineMessage["trigger"] })}>
-              {LINE_TRIGGERS.map((t) => (
-                <option key={t} value={t}>{TRIGGER_LABEL[t]}</option>
-              ))}
-            </Select>
-          </Field>
-          <Field label="Only for hat">
-            <Select value={m.hat ?? ""} onChange={(e) => set({ ...m, hat: (e.target.value || null) as LineMessage["hat"] })}>
-              <option value="">Any hat</option>
-              {HATS.map((h) => (
-                <option key={h} value={h}>{HAT_LABEL[h]}</option>
-              ))}
-            </Select>
-          </Field>
-          <Field label="Only at">
-            <Select value={m.timeOfDay ?? ""} onChange={(e) => set({ ...m, timeOfDay: (e.target.value || null) as LineMessage["timeOfDay"] })}>
-              <option value="">Any time</option>
-              {TIMES_OF_DAY.map((t) => (
-                <option key={t} value={t}>{t}</option>
-              ))}
-            </Select>
-          </Field>
-          <Check label="On" checked={m.active} onChange={(e) => set({ ...m, active: e.target.checked })} />
-        </div>
-      )}
-    />
   );
 }
 

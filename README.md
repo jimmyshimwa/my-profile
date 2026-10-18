@@ -1,10 +1,10 @@
 # Jimmy Shimwa: portfolio (version 2)
 
-A single-page portfolio for Jimmy Shimwa. A glowing blue Line travels down a topographic map of the hills as you scroll and connects each milestone. Visitors pick a hat (Founder, Engineer or Project manager) before they enter. The palette follows the real time in Kigali. There's a small admin for editing every word.
+A one-page portfolio for Jimmy Shimwa, in the style of lusion.co. A plain ribbon line draws itself through each section as you scroll and bends away from the pointer. Imigongo patterns appear in black and white in a few places. There are light and dark themes, and "See me as" switches the copy between Founder, Engineer and Project manager. There's a small admin for editing every word.
 
 - Design and technical decisions: [DECISIONS.md](DECISIONS.md)
 - Draft copy and guessed facts to check: [CONTENT_REVIEW.md](CONTENT_REVIEW.md)
-- Reference research: [research/REFERENCES.md](research/REFERENCES.md)
+- Reference research: [research/LUSION.md](research/LUSION.md) (the main reference) and [research/REFERENCES.md](research/REFERENCES.md)
 
 ## Run it locally
 
@@ -25,7 +25,7 @@ npm test             # unit tests (Node test runner)
 npm run db:seed      # write the seed content to Supabase (see below)
 ```
 
-Add `?tier=full`, `?tier=lite`, `?tier=svg` or `?tier=static` to the URL to force a version of the Line. This is useful on a real phone.
+Add `?tier=full`, `?tier=lite`, `?tier=svg` or `?tier=static` to the URL to force a version of the line. This is useful on a real phone.
 
 ## Connect Supabase (one time, about 10 minutes)
 
@@ -58,11 +58,11 @@ Go to `/admin` and sign in.
 - **Projects.**
   - Open a project to edit it.
   - Each hat has its own role label and one-liner.
-  - Pick the Line's move (coil, frame, knot, write, steps).
+  - The **first link** is where the card opens; leave links empty and the card isn't clickable.
+  - Paste a Media URL into **Cover image** to replace the imigongo tile with a photo.
   - Reorder per hat with Up/Down.
-  - Untick Published to hide a project, and use **Preview saved version** to see a draft in the real design.
-- **Positions.** Your roles, plus the smaller "Also built" list.
-- **Line and clock.** What the Line says and when, and the Kigali status lines by hour.
+  - Untick Published to hide a project.
+- **Kigali clock.** The footer status lines by hour.
 - **Media.** Upload images (alt text is required), then copy a URL into a project or your profile.
 
 **Save and publish** makes a change live straight away. Unsaved edits are kept in the browser and the page warns you before you leave.
@@ -70,13 +70,13 @@ Go to `/admin` and sign in.
 ## Project layout
 
 ```
-app/(site)/          public pages: home, /work/[slug], /cv
+app/(site)/          the public page (one page: hero, work, about, contact)
 app/admin/           admin pages and server actions (actions.ts)
-components/line/     the Line: WebGL canvas, shaders, SVG fallback, voice
-components/site/     gate, hat switch, header and clock, statement, route
+components/line/     the line: WebGL ribbon, shaders, SVG fallback
+components/site/     header and menu, hat switch, reveals, work grid, imigongo
 components/admin/    admin forms
 lib/content/         types, seed content, validation, row mapping
-lib/route-path.ts    builds the Line's route from the page layout
+lib/lines.ts         lays out each section's line around the page
 supabase/migrations/ database schema and security rules
 scripts/seed.ts      loads seed content into Supabase
 ```

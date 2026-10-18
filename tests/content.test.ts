@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { kigaliTime, statusFor, timeOfDayFor } from "../lib/kigali.ts";
+import { kigaliTime, statusFor } from "../lib/kigali.ts";
+import { quadInOut, showRatio } from "../lib/lines.ts";
 import { seed } from "../lib/content/seed.ts";
 import {
   alsoShippedSchema,
@@ -17,12 +18,14 @@ test("Kigali time ignores the visitor's timezone (UTC+2, no DST)", () => {
   assert.equal(t.label, "22:14");
 });
 
-test("time of day boundaries", () => {
-  assert.equal(timeOfDayFor(4), "night");
-  assert.equal(timeOfDayFor(5), "dawn");
-  assert.equal(timeOfDayFor(7), "day");
-  assert.equal(timeOfDayFor(17), "dusk");
-  assert.equal(timeOfDayFor(19), "night");
+test("line draw ratio follows the section, eased at both ends", () => {
+  assert.equal(quadInOut(0), 0);
+  assert.equal(quadInOut(1), 1);
+  assert.equal(quadInOut(0.5), 0.5);
+  // Not started while the section is below its start point.
+  assert.equal(showRatio(900, 800, 1, 1), 0);
+  // Complete once it has moved f1 viewports past the start point.
+  assert.equal(showRatio(-100, 800, 1, 1.125), 1);
 });
 
 test("every hour has a status line", () => {

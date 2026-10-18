@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { timeOfDayScript } from "@/lib/kigali";
+import { themeScript } from "@/lib/theme";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -28,16 +28,16 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#eef2f4" },
-    { media: "(prefers-color-scheme: dark)", color: "#070b1c" },
+    { media: "(prefers-color-scheme: light)", color: "#f0f1f4" },
+    { media: "(prefers-color-scheme: dark)", color: "#0c0d10" },
   ],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" data-time="day" className={satoshi.variable} suppressHydrationWarning>
+    <html lang="en" data-theme="light" className={satoshi.variable} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: timeOfDayScript }} />
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="min-h-svh">{children}</body>
     </html>

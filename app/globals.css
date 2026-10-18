@@ -1,103 +1,94 @@
 @import "tailwindcss";
 
 /*
- * Palettes follow the real time in Kigali (set on <html data-time> before
- * first paint). The Line is always blue; each hat adds one accent that is
- * only used for marks, never for body text. Contrast notes in DECISIONS.md.
+ * Two themes, set on <html data-theme> before first paint. Black and white
+ * carry the identity (imigongo); one blue is kept for focus and small dots.
  */
-:root {
-  --bg: #eef2f4;
-  --ink: #0b1424;
-  --muted: #47536a;
-  --rule: rgb(11 20 36 / 0.14);
-  --contour: rgb(11 20 36 / 0.11);
-  --line: #1f4fff;
-  --line-glow: #6f97ff;
-  --accent: #e8a33d;
-  --surface: rgb(255 255 255 / 0.55);
+:root,
+:root[data-theme="light"] {
+  --bg: #f0f1f4;
+  --ink: #0b0b0f;
+  --muted: #4b4e5a;
+  --rule: rgb(11 11 15 / 0.12);
+  --pill: #e2e4ea;
+  --pill-ink: #0b0b0f;
+  --solid: #16171d;
+  --solid-ink: #f0f1f4;
+  --card: #e6e8ee;
+  --accent: #1a2ffb;
   --danger: #b42318;
+  --surface: rgb(255 255 255 / 0.6);
   color-scheme: light;
 }
 
-:root[data-time="dawn"] {
-  --bg: #dce3ec;
-  --ink: #0f1830;
-  --muted: #4a5672;
-  --rule: rgb(15 24 48 / 0.16);
-  --contour: rgb(15 24 48 / 0.12);
-  --line: #2f5bff;
-  --line-glow: #86a6ff;
-  --surface: rgb(255 255 255 / 0.5);
-  color-scheme: light;
-}
-
-:root[data-time="dusk"] {
-  --bg: #1c1730;
-  --ink: #f1ecf6;
-  --muted: #b4aac8;
-  --rule: rgb(241 236 246 / 0.16);
-  --contour: rgb(241 236 246 / 0.09);
-  --line: #5a8cff;
-  --line-glow: #a9c2ff;
-  --surface: rgb(28 23 48 / 0.6);
+:root[data-theme="dark"] {
+  --bg: #0c0d10;
+  --ink: #eeeff3;
+  --muted: #a3a6b3;
+  --rule: rgb(238 239 243 / 0.14);
+  --pill: #1d1f26;
+  --pill-ink: #eeeff3;
+  --solid: #eeeff3;
+  --solid-ink: #0c0d10;
+  --card: #17181e;
+  --accent: #7c88ff;
   --danger: #ff9b8f;
+  --surface: rgb(12 13 16 / 0.6);
   color-scheme: dark;
 }
-
-:root[data-time="night"] {
-  --bg: #070b1c;
-  --ink: #e7ecf7;
-  --muted: #93a0be;
-  --rule: rgb(231 236 247 / 0.14);
-  --contour: rgb(231 236 247 / 0.08);
-  --line: #4d7dff;
-  --line-glow: #8db4ff;
-  --surface: rgb(7 11 28 / 0.6);
-  --danger: #ff9b8f;
-  color-scheme: dark;
-}
-
-:root[data-hat="founder"] { --accent: #e8a33d; }
-:root[data-hat="engineer"] { --accent: #2fc5b5; }
-:root[data-hat="pm"] { --accent: #e2668a; }
 
 @theme inline {
   --color-bg: var(--bg);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-rule: var(--rule);
-  --color-line: var(--line);
+  --color-pill: var(--pill);
+  --color-solid: var(--solid);
+  --color-card: var(--card);
   --color-accent: var(--accent);
   --color-surface: var(--surface);
   --font-sans: var(--font-satoshi), ui-sans-serif, system-ui, sans-serif;
-  --ease-trail: cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-html {
-  background: var(--bg);
-  transition: background-color 800ms var(--ease-trail);
+  --ease-lusion: cubic-bezier(0.4, 0, 0.1, 1);
 }
 
 /* The page colour lives on <html> so the fixed WebGL layer (z-index -10)
    can sit between it and the content. */
+html {
+  background: var(--bg);
+  transition: background-color 500ms var(--ease-lusion);
+}
+
 body {
   background: transparent;
   color: var(--ink);
   font-family: var(--font-sans);
-  font-feature-settings: "ss01", "tnum" 0;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  transition: color 500ms var(--ease-lusion);
 }
 
 ::selection {
-  background: var(--line);
-  color: #fff;
+  background: var(--ink);
+  color: var(--bg);
 }
 
 :focus-visible {
-  outline: 2px solid var(--line);
-  outline-offset: 4px;
-  border-radius: 2px;
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.tnum {
+  font-feature-settings: "tnum" 1;
+}
+
+/* Small uppercase labels (Lusion uses a mono for these; Satoshi caps here). */
+.label {
+  font-size: 0.75rem;
+  line-height: 1.35;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 /* Lenis */
@@ -109,39 +100,62 @@ html.lenis body {
   overflow: clip;
 }
 
-/* The gate covers the page only when JavaScript runs (html.js). */
-.hat-gate {
-  display: none;
+@layer components {
+/* Pill buttons with a leading dot. */
+.pill {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.6rem;
+  border-radius: 999px;
+  padding: 0 1.25rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition:
+    transform 400ms var(--ease-lusion),
+    background-color 400ms,
+    color 400ms;
 }
-html.js .hat-gate {
-  display: flex;
+.pill:hover {
+  transform: scale(1.04);
+}
+.pill-dot {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 999px;
+  background: currentColor;
+  transition: transform 400ms var(--ease-lusion);
+}
+.pill:hover .pill-dot {
+  transform: scale(1.6);
+}
+.pill-light {
+  background: var(--pill);
+  color: var(--pill-ink);
+}
+.pill-dark {
+  background: var(--solid);
+  color: var(--solid-ink);
+}
 }
 
-/* Statement type: weight is driven by --w from scroll. */
-.kinetic-word {
+/* Text reveal: words rise out of a mask when they enter the viewport. */
+.reveal-word {
   display: inline-block;
-  font-variation-settings: "wght" var(--w, 520);
-  will-change: transform;
+  /* Inline-blocks inherit text-indent; only the heading's first line indents. */
+  text-indent: 0;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
 }
-
-.tnum {
-  font-feature-settings: "tnum" 1;
+.reveal-word > span {
+  display: inline-block;
 }
-
-/* A thin rule that reads as a contour line. */
-.contour-rule {
-  background-image: linear-gradient(90deg, var(--rule), var(--rule));
-  background-size: 100% 1px;
-  background-repeat: no-repeat;
-  background-position: 0 50%;
-}
-
-/* No-WebGL fallback for the topography: concentric "hills" in CSS. */
-.topo-fallback {
-  background-color: var(--bg);
-  background-image:
-    repeating-radial-gradient(ellipse 60% 40% at 18% 22%, transparent 0 22px, var(--contour) 22px 23px),
-    repeating-radial-gradient(ellipse 50% 45% at 82% 64%, transparent 0 26px, var(--contour) 26px 27px);
+html.js [data-reveal]:not([data-revealed]) .reveal-word > span {
+  transform: translateY(105%);
 }
 
 /* Hat switch: copy is rewritten left to right. */
@@ -150,25 +164,7 @@ html.js .hat-gate {
   to { clip-path: inset(0 0 0 0); }
 }
 .hat-wipe {
-  animation: hat-wipe 620ms var(--ease-trail) both;
-}
-
-/* Station spotlight (one project in focus at a time). */
-.station {
-  opacity: 0.32;
-  transition: opacity 700ms var(--ease-trail);
-}
-.station[data-active="true"] {
-  opacity: 1;
-}
-html:not(.js) .station {
-  opacity: 1;
-}
-
-/* Case-study title morph. */
-::view-transition-group(.morph) {
-  animation-duration: 520ms;
-  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation: hat-wipe 620ms var(--ease-lusion) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -180,7 +176,7 @@ html:not(.js) .station {
     transition-duration: 1ms !important;
     scroll-behavior: auto !important;
   }
-  .station {
-    opacity: 1;
+  html.js [data-reveal]:not([data-revealed]) .reveal-word > span {
+    transform: none;
   }
 }

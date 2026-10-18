@@ -178,7 +178,8 @@ export const seed: SiteContent = {
         pm: { label: "Project manager", line: "I ran it from brief to a live site." },
       },
       stack: [],
-      links: [{ label: "Live site", url: "https://example.com" }],
+      // Add the live URL in the admin once it's confirmed.
+      links: [],
       year: 2025,
       featured: true,
       order: { founder: 3, engineer: 2, pm: 1 },

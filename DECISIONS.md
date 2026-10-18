@@ -7,7 +7,41 @@ A log of the design and technical choices in version 2, and why. Newest at the b
 - **One art direction instead of three.** The brief asks for three directions in Phase 1. Jimmy asked for something visible within a five-hour build, so I committed to one direction, "The Route" (below), and built it end to end. If it doesn't land, the other directions can be explored on a branch.
 - **Branches.** `version-1` is a snapshot of the old site. `version-2` is the rebuild, started from an empty tree except `public/`. It merges into `main` when approved; no force push is needed, so the old history stays.
 
-## Art direction: "The Route"
+## Revision 2 (18 Oct 2026): the Lusion direction
+
+Jimmy reviewed "The Route" below and asked for a change. He found it too dark, said it had no identity, and found the glowing line too quick and too unlike Lusion's. He also wanted a simpler one-page site that gets a visitor from "who is this" to "contact" fast. This revision **replaces** the art direction, the Line and the page structure described further down. The stack, security and admin sections still apply.
+
+- **The reference is studied, not guessed.** [research/LUSION.md](research/LUSION.md) records how lusion.co is actually built: one flat ribbon per section, pinned to that section, drawn with `quadInOut` by scroll position, with a round tip and over/under crossings.
+- **Themes.** Light by default (`#f0f1f4`, close to Lusion's off-white) with a dark toggle (`#0c0d10`). The choice is saved in `localStorage` and applied before first paint. The Kigali time no longer changes the palette; it lives in the footer status line ("Kigali 22:14, probably debugging").
+- **Identity: imigongo, in black and white only.** It appears in just these places:
+  - The grid markers under the hero are lozenges, where Lusion uses "+".
+  - Each project tile is an imigongo panel until real photos are uploaded (chevrons, lozenges, steps, concentric squares, zigzags).
+  - A chevron band sits in the menu and in the footer.
+  - The line takes a chevron pattern on a few stretches.
+  
+  There's no red or ochre, at Jimmy's request.
+- **The line.**
+  - It's a plain ribbon: black on light, white on dark, with no glow and no lighting.
+  - There's one ribbon per section (hero, work, about, contact), each laid out around real elements (`data-line-target`). Loops pass behind the photo and the tiles, and the paths stay clear of text at phone and desktop widths. The hero loop is placed after the statement's measured last line, so it fits every hat's sentence.
+  - The drawn amount follows Lusion's formula, eased toward the scroll position so it trails a beat behind.
+  - It bends away from the pointer or finger and gets a slight travelling wave while scrolling.
+  - A thin page-coloured edge makes crossings read as over and under.
+  - The width scales from 9 px on phones to 18 px on large screens.
+  - The SVG fallback and the reduced-motion version draw the same routes.
+- **Structure.** Four sections only: hero, work, about, contact.
+  - The hero answers everything a visitor needs at once: what Jimmy does (the statement), how long (3 years, 10+ projects), and how to reach him (Let's talk, Download CV).
+  - The hat gate is gone. The site opens on the hero, and "See me as" switches hats in place.
+- **Work.** Five small cards, rows with a square thumbnail on phones and a three-column grid on desktop. A card opens the project's first link in a new tab. There are no project pages and no `/cv` page (the CV downloads directly), so it's one page.
+- **Motion, after Lusion.**
+  - Lenis smooth scroll.
+  - Headings rise word by word out of a mask as they enter (`expo.out`).
+  - Cards rise and settle as they scroll in.
+  - Pill buttons with a dot, and a menu panel sliding from the top right.
+  - Easing is `cubic-bezier(.4, 0, .1, 1)`.
+  - The header slides away while you scroll down and returns when you scroll up.
+- **Removed:** the hat gate, the time-of-day themes, the topographic shader, the line's speech bubbles, the positions and "Also built" sections, project case-study pages, `/cv` and the admin preview. Their data is still in the database, so nothing is lost. The admin now shows Profile and hats, Projects, Kigali clock and Media.
+
+## Art direction: "The Route" (superseded by revision 2)
 
 - **Concept.** Jimmy hikes, and Rwanda is the land of a thousand hills. The page is a topographic map. The Line is the trail across it, and his milestones are the stops on that trail. The site opens on the gate ("three ways up the same hill") and ends at the summit, where the Line loops around his email.
 - **Why it isn't generic.** There's no hero gradient blob, card grid, eyebrow labels, marquee or pill toggle. The hero is a statement, not a name. The background is a generated contour map, never a stock image. The Rwanda reference comes through elevation ("Kigali, 1,567 m"), the hills and the light, not flags.

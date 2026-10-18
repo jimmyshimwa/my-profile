@@ -5,8 +5,7 @@ import { signOut } from "@/app/admin/actions";
 const NAV = [
   { href: "/admin", label: "Profile and hats" },
   { href: "/admin/projects", label: "Projects" },
-  { href: "/admin/positions", label: "Positions" },
-  { href: "/admin/line", label: "Line and clock" },
+  { href: "/admin/line", label: "Kigali clock" },
   { href: "/admin/media", label: "Media" },
 ];
 
